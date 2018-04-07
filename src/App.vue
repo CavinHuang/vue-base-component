@@ -1,6 +1,9 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
+    <ul>
+      <router-link :to="{ name: 'Swiper'}" tag="li">Swiper</router-link>
+    </ul>
     <router-view/>
   </div>
 </template>
