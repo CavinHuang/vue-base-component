@@ -1,25 +1,40 @@
 <template lang="pug">
-div(style="position:relative;width:100%;height:200px;")
-  swiper
-    swiper-item
-      <div class="slide-dbg gbg1">第一页</div>
-    swiper-item
-      <div class="slide-dbg gbg2">第二页</div>
-    swiper-item
-      <div class="slide-dbg gbg3">第三页</div>
-    swiper-item
-      <div class="slide-dbg gbg4">第四页</div>
-    swiper-item
-      <div class="slide-dbg gbg1">第五页</div>
+div.swiper-demo-container
+  div(style="position:relative;width:100%;height:200px;")
+    swiper(:autoInterval="-1")
+      swiper-item
+        div.slide-dbg.gbg1 第一页
+      swiper-item
+        div.slide-dbg.gbg2 第二页
+      swiper-item
+        div.slide-dbg.gbg3 第三页
+      swiper-item
+        div.slide-dbg.gbg4 第四页
+      swiper-item
+        div.slide-dbg.gbg1 第五页
+  div(style="position:relative;width:100%;height:200px; margin-top: 40px;")
+    swiper-new
+      swiper-item
+        div.slide-dbg.gbg1 第一页
+      swiper-item
+        div.slide-dbg.gbg2 第二页
+      swiper-item
+        div.slide-dbg.gbg3 第三页
+      swiper-item
+        div.slide-dbg.gbg4 第四页
+      swiper-item
+        div.slide-dbg.gbg1 第五页
 </template>
 
 <script>
-import swiper from '@/components/swiper'
+import swiper from '@/components/swiper/index0.vue'
+import swiperNew from '@/components/swiper'
 import swiperItem from '@/components/swiper/item/swiper-item'
 export default {
   components: {
     swiper,
-    swiperItem
+    swiperItem,
+    swiperNew
   }
 }
 </script>
