@@ -254,7 +254,7 @@ export default {
         nextPage: dragObject.nextPage,
         distanceX: dragObject.distanceX
       })
-      this.dragObject = {}
+      //this.dragObject = {}
     }
   },
   mounted () {
