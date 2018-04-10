@@ -41,6 +41,16 @@ export default {
       })
       this.pages = pages
     },
+    /**
+     * 设置el的translate
+     * @param {[type]}   $el      [description]
+     * @param {[type]}   offset   [description]
+     * @param {[type]}   speed    [description]
+     * @param {Function} callback [description]
+     */
+    setTranslate ($el, offset, speed, callback) {
+
+    },
     touchStart (event) {
       console.log(event)
       const touch = event.touches ? event.touches[0] : event
@@ -56,7 +66,12 @@ export default {
       touches.prevPage.style.display = 'block'
       touches.nextPage.style.display = 'block'
     },
-    touchMove (event) {},
+    touchMove (event) {
+      const touch = event.touches ? event.touches[0] : event
+      const touches = this.touches
+
+
+    },
     touchEnd (event) {}
   },
   mounted () {
