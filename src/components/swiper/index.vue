@@ -25,7 +25,8 @@ export default {
     return {
       pages: [], // dots
       currentIndex: 0, // default index
-      touches: {} // touch data
+      touches: {}, // touch data
+      animating: false
     }
   },
   methods: {
@@ -49,7 +50,23 @@ export default {
      * @param {Function} callback [description]
      */
     setTranslate ($el, offset, speed, callback) {
-
+      if (speed) {
+        this.animating = true
+        $el.style.webkitTransition = '-webkit-transform ' + speed + 'ms ease-in-out'
+        setTimeout(() => {
+          $el.style.webkitTransform = `translate3d(${offset}px,0,0)`
+        }, 60)
+        const transitionEndCallback = () => {
+          this.animating = false
+          $el.style.webkitTransition = ''
+          $el.style.webkitTransform = ''
+          callback && callback()
+        }
+        setTimeout(transitionEndCallback, speed + 30)
+      } else {
+        $el.style.webkitTransition = ''
+        $el.style.webkitTransform = `translate3d(${offset}px,0,0)`
+      }
     },
     touchStart (event) {
       console.log(event)
@@ -69,8 +86,32 @@ export default {
     touchMove (event) {
       const touch = event.touches ? event.touches[0] : event
       const touches = this.touches
+      if(!touches['startX']) return
+      touches.distanceX = touch.pageX - touches.startX
+      touches.currentX = touch.pageX
+      let offset = touches.currentX - touches.startX
 
+      if (!this.animating && Math.abs(offset) < 5) return
+      offset = Math.min(Math.max(-touches.$elWidth + 1, offset), touches.$elWidth - 1)
+      if (!this.loop && ((this.currentIndex === 0 && offset > 0) ||
+          (this.currentIndex === this.pages.length - 1 && offset < 0))) {
+        touches.currentLeft = null
+        offset = 0
+      }
 
+      this.animating = true
+      event.preventDefault()
+      this.setTranslate(touches.currentPage, offset)
+      if (touches.prevPage !== touches.nextPage) {
+        this.setTranslate(touches.prevPage, offset - touches.$elWidth)
+        this.setTranslate(touches.nextPage, offset + touches.$elWidth)
+      } else {
+        if (this.index === 1) {
+          this.setTranslate(touches.nextPage, offset - touches.$elWidth)
+        } else {
+          this.setTranslate(touches.nextPage, offset + touches.$elWidth)
+        }
+      }
     },
     touchEnd (event) {}
   },
