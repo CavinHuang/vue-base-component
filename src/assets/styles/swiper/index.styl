@@ -1,41 +1,34 @@
-.swiper-warrp, .swiper-item {
-  position: relative;
-  height: 100%;
-  overflow: hidden
-}
-.swiper-warrp {
-  position: absolute;
-  width: 100%;
-}
-.swiper-contaner .swiper-item {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform: translate3d(-100%, 0, 0);
-  display: none;
-}
-.swiper-contaner .slide-active {
-  display: block;
-  transform: none;
-}
-.swiper-dots {
-  z-index: 666;
-  position: absolute;
-  height: 10px;
-  left: 50%;
-  bottom: 15px;
-  transform: translate3d(-50%, 0, 0);
-  .swiper-dot {
-    width: 8px;
-    height: 8px;
-    display: inline-block;
-    border-radius: 4px;
-    background-color: rgba(0, 0, 0, 0.5);
-    margin: 0 3px;
-  }
-  .dot-active {
-    background: #fff;
-  }
-}
+.swiper-container
+  width 100%
+  &,.swiper-warrp
+    &,.swiper-item
+      position relative
+  .swiper-item
+    display none
+  .active-item
+    display block
+  .swiper-dots
+    position absolute
+    bottom 10px
+    width 100%
+    height 20px
+    text-align center
+    .swiper-dot-item
+      display inline-block
+      width 10px
+      height 10px
+      background rgba(0, 0, 0, 0.4)
+      margin-left 10px
+      border-radius 50%
+  .swiper-slide-arrow
+
+    // z-index -1
+    .swiper-slide-left, .swiper-slide-right
+      position absolute
+      top 50%
+      transform translateY(-50%)
+      height 60px
+      width 40px
+      background rgba(0, 0, 0, 0.4)
+    .swiper-slide-right
+      right 0

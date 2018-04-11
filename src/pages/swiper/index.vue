@@ -1,7 +1,7 @@
 <template lang="pug">
 div.swiper-demo-container
-  div(style="position:relative;width:100%;height:200px;")
-    swiper(:autoInterval="-1")
+  //div(style="position:relative;width:100%;height:200px;")
+    swiper-new(:autoInterval="-1")
       swiper-item
         div.slide-dbg.gbg1 第一页
       swiper-item
@@ -14,7 +14,7 @@ div.swiper-demo-container
         div.slide-dbg.gbg1 第五页
   div(style="position:relative;width:100%;height:200px; margin-top: 40px;")
     swiper-new
-      swiper-item
+      swiper-item(class="active-item")
         div.slide-dbg.gbg1 第一页
       swiper-item
         div.slide-dbg.gbg2 第二页
@@ -27,12 +27,10 @@ div.swiper-demo-container
 </template>
 
 <script>
-import swiper from '@/components/swiper/index0.vue'
 import swiperNew from '@/components/swiper'
 import swiperItem from '@/components/swiper/item/swiper-item'
 export default {
   components: {
-    swiper,
     swiperItem,
     swiperNew
   }

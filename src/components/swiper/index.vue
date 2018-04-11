@@ -1,134 +1,28 @@
 <template lang="pug">
-div.swiper-warrp
-  ul.swiper-contaner
-    slot
-  .swiper-dots(v-show='showDots')
-    .swiper-dot(v-for='(page, $index) in pages', :class="{ 'dot-active': $index == currentIndex }", :key='$index')
-
+div.swiper-container
+  div.swiper-warrp
+    ul.swiper-ul
+      slot
+  div.swiper-dots
+    span.swiper-dot-item(v-for="(item, $index) in items")
+  div.swiper-slide-arrow
+    div.swiper-slide-left
+      span.swiper-arrow-left
+    div.swiper-slide-right
+      span.swiper-arrow-right
 </template>
 
 <script>
-import {addClass, removeClass} from '@/utils/dom.js'
+
 export default {
-  name: 'Swiper',
-  props: {
-    showDots: {
-      default: true,
-      type: Boolean
-    },
-    defaultIndex: {
-      type: Number,
-      default: 0
-    }
-  },
+  name: 'swiper',
   data () {
     return {
-      pages: [], // dots
-      currentIndex: 0, // default index
-      touches: {}, // touch data
-      animating: false
+      items: [1, 2, 3]
     }
-  },
-  methods: {
-    initPages () {
-      let childrenEle = this.$children
-      this.currentIndex = Math.abs(this.defaultIndex) < childrenEle.length ? this.defaultIndex : 0
-      let pages = []
-      childrenEle.forEach((item, $index) => {
-        pages.push(item.$el)
-        // removeClass
-        removeClass('slide-active')
-        if (this.currentIndex === $index) addClass(item.$el, 'slide-active')
-      })
-      this.pages = pages
-    },
-    /**
-     * 设置el的translate
-     * @param {[type]}   $el      [description]
-     * @param {[type]}   offset   [description]
-     * @param {[type]}   speed    [description]
-     * @param {Function} callback [description]
-     */
-    setTranslate ($el, offset, speed, callback) {
-      if (speed) {
-        this.animating = true
-        $el.style.webkitTransition = '-webkit-transform ' + speed + 'ms ease-in-out'
-        setTimeout(() => {
-          $el.style.webkitTransform = `translate3d(${offset}px,0,0)`
-        }, 60)
-        const transitionEndCallback = () => {
-          this.animating = false
-          $el.style.webkitTransition = ''
-          $el.style.webkitTransform = ''
-          callback && callback()
-        }
-        setTimeout(transitionEndCallback, speed + 30)
-      } else {
-        $el.style.webkitTransition = ''
-        $el.style.webkitTransform = `translate3d(${offset}px,0,0)`
-      }
-    },
-    touchStart (event) {
-      console.log(event)
-      const touch = event.touches ? event.touches[0] : event
-      const touches = this.touches
-      touches.startX = touch.pageX
-      touches.startTime = Date.now()
-      touches.$elWidth = this.$el.offsetWidth
-      let prevIndex = this.currentIndex - 1 < 0 ? this.pages.length - 1 : this.currentIndex - 1
-      let nextIndex = this.currentIndex + 1 > this.pages.length - 1 ? 0 : this.currentIndex + 1
-      touches.prevPage = this.pages[prevIndex]
-      touches.currentPage = this.pages[this.currentIndex]
-      touches.nextPage = this.pages[nextIndex]
-      touches.prevPage.style.display = 'block'
-      touches.nextPage.style.display = 'block'
-    },
-    touchMove (event) {
-      const touch = event.touches ? event.touches[0] : event
-      const touches = this.touches
-      if(!touches['startX']) return
-      touches.distanceX = touch.pageX - touches.startX
-      touches.currentX = touch.pageX
-      let offset = touches.currentX - touches.startX
-
-      if (!this.animating && Math.abs(offset) < 5) return
-      offset = Math.min(Math.max(-touches.$elWidth + 1, offset), touches.$elWidth - 1)
-      if (!this.loop && ((this.currentIndex === 0 && offset > 0) ||
-          (this.currentIndex === this.pages.length - 1 && offset < 0))) {
-        touches.currentLeft = null
-        offset = 0
-      }
-
-      this.animating = true
-      event.preventDefault()
-      this.setTranslate(touches.currentPage, offset)
-      if (touches.prevPage !== touches.nextPage) {
-        this.setTranslate(touches.prevPage, offset - touches.$elWidth)
-        this.setTranslate(touches.nextPage, offset + touches.$elWidth)
-      } else {
-        if (this.index === 1) {
-          this.setTranslate(touches.nextPage, offset - touches.$elWidth)
-        } else {
-          this.setTranslate(touches.nextPage, offset + touches.$elWidth)
-        }
-      }
-    },
-    touchEnd (event) {}
-  },
-  mounted () {
-    this.initPages()
-
-    // bind event
-    let $el = this.$el
-
-    $el.addEventListener('touchstart', this.touchStart, false)
-    $el.addEventListener('touchmove', this.touchMove, false)
-    $el.addEventListener('touchend', this.touchEnd, false)
-  },
-  destroyed () {}
+  }
 }
 </script>
 <style lang="stylus">
-@import '../../assets/styles/swiper/index.styl'
-
+@import '../../assets/styles/swiper/index.styl';
 </style>
