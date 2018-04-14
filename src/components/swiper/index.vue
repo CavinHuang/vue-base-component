@@ -58,7 +58,10 @@ export default {
      * @param  {[Object]} e [touch event]
      * @return {[type]}   [description]
      */
-    touchMove (e) {},
+    touchMove (e) {
+      const touchs = e.touchs[0] ? e.touchs[0] : e
+      const pageX = touchs.pageX
+    },
     /**
      * touch end event hendle
      * @param  {[Object]} e [touch event]
