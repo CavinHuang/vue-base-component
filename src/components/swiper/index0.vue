@@ -1,7 +1,7 @@
 <template lang="pug">
 div.swiper-container
   div.swiper-warrp
-    ul.swiper-ul(ref="swiperUl")
+    ul.swiper-ul(:style="trackStyle", ref="swiperUl")
       slot
   div.swiper-dots
     span.swiper-dot-item(v-for="(item, $index) in items")
@@ -13,27 +13,38 @@ div.swiper-container
 </template>
 
 <script>
-function toArray (arraylike) {
-  return Array.prototype.slice.call(arraylike)
-}
+
 export default {
   name: 'swiper',
   data () {
     return {
+      width: 0,
+      count: 0,
+      initialSwipe: 0, // 初始化第几章
+      currentDuration: 500,
       win: {}, // Windows
       items: [], // itmes
       touchData: {}, // 移动数据
       distance: 0, // 移动距离
       offsetX: 0, // 移动的距离，不带方向
       moveX: 0, // 当前的translateX
-      currentIndex: 0, // 当前索引
-      count: 0
+      currentIndex: 0 // 当前索引
+    }
+  },
+  computed: {
+    trackStyle () {
+      return {
+        paddingLeft: this.width + 'px',
+        width: (this.count + 2) * this.width + 'px',
+        transitionDuration: `${this.currentDuration}ms`,
+        transform: `translate(${this.offsetX}px, 0)`
+      }
     }
   },
   mounted () {
     this.winMethod()
     this.initItems()
-    this.cloneItemNode()
+
     // 绑定时事件
     const $el = this.$el
 
@@ -61,26 +72,14 @@ export default {
         children[i].style.width = win.w + 'px'
         this.items.push(children[i])
       }
+      this.width = this.$el.getBoundingClientRect().width
       this.count = len
-    },
-    /**
-     * 克隆两个节点
-     * @return {[type]} [description]
-     */
-    cloneItemNode () {
-      const $el = this.$refs.swiperUl
-      let head = this.items[0].cloneNode(this.items[0], true)
-      let tail = this.items[this.count - 1].cloneNode(this.items[this.count - 1], true)
-      this.$refs.swiperUl.appendChild(head)
-      this.$refs.swiperUl.insertBefore(tail, this.items[0])
-      this.items = toArray(this.$refs.swiperUl.children)
-      this.count = this.items.length
-
+      this.offsetX = this.count > 1 ? -this.width * (this.currentIndex + 1) : 0
       // warrp 的长度
-      $el.style.width = this.count * this.win.w + 'px'
+      // $el.style.width = len * win.w + 'px'
       // $el.style.paddingLeft = win.w + 'px'
       // $el.style.webkitTransitionDuration = '500ms'
-      $el.style.webkitTransform = 'translate3d(-' + this.win.w + 'px, 0, 0)'
+      // $el.style.webkitTransform = 'translate3d(-' + this.win.w + 'px, 0, 0)'
     },
     /**
      * touch start event handle
@@ -106,6 +105,9 @@ export default {
       this.offsetX = Math.abs(distance)
 
       // 判断方向
+      if (this.currentIndex - 1 < 0) {
+        this.items[this.items.length - 1].style.webkitTransform = 'translate3d(-' + (this.items.length - 1) * this.win.w + 'px, 0, 0)'
+      }
       $el.style.webkitTransitionDuration = '0ms'
       $el.style.webkitTransform = 'translate3d(' + (this.moveX + distance) * (-1) + 'px, 0, 0)'
     },
