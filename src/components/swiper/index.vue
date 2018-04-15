@@ -19,7 +19,11 @@ export default {
   data () {
     return {
       items: [], // itmes
-      touchData: {} // 移动数据
+      touchData: {}, // 移动数据
+      distance: 0, // 移动距离
+      offsetX: 0, // 移动的距离，不带方向
+      moveX: 0, // 当前的translateX
+      currentIndex: 0 // 当前索引
     }
   },
   mounted () {
@@ -30,18 +34,33 @@ export default {
 
     $el.addEventListener('touchstart', this.touchStart, false)
     $el.addEventListener('touchmove', this.touchMove, false)
-    $el.addEventListener('touchEnd', this.touchEnd, false)
+    $el.addEventListener('touchend', this.touchEnd, false)
   },
   methods: {
+    win () {
+      return {
+        w : window.innerWidth,
+        h : window.innerHeight
+      }
+    },
     /**
      * 初始化Item
      * @return {[type]} [description]
      */
     initItems () {
-      const $el = this.$refs.swiperUl.children
-      for (var i = 0; i < $el.length; i++) {
+      const $el = this.$refs.swiperUl
+      const children = $el.children
+      const len = children.length
+      const win = this.win()
+      for (var i = 0; i < len; i++) {
+        children[i].style.width = win.w + 'px'
         this.items.push($el[i])
       }
+      // warrp 的长度
+      console.log($el);
+      $el.style.width = len * win.w + 'px'
+      $el.style.webkitTransitionDuration = "500ms"
+      $el.style.webkitTransform = "translate3d(0, 0, 0)"
     },
     /**
      * touch start event handle
@@ -49,7 +68,7 @@ export default {
      * @return {[type]}   [description]
      */
     touchStart (e) {
-      const touchs = e.touchs[0] ? e.touchs[0] : e
+      const touchs = e.touches[0] ? e.touches[0] : e
       this.touchData.startTime = Date.now() // 开始时的时间戳
       this.touchData.startX = touchs.pageX // 开始时的横坐标
     },
@@ -59,15 +78,52 @@ export default {
      * @return {[type]}   [description]
      */
     touchMove (e) {
-      const touchs = e.touchs[0] ? e.touchs[0] : e
+      const touchs = e.touches[0] ? e.touches[0] : e
       const pageX = touchs.pageX
+      const $el = this.$refs.swiperUl
+      let distance = this.touchData.startX - pageX
+      this.distance = distance
+      this.offsetX = Math.abs(distance)
+
+      // 判断方向
+
+      $el.style.webkitTransitionDuration = "0ms"
+      $el.style.webkitTransform = "translate3d("+(this.moveX + distance) * -1+"px, 0, 0)"
     },
     /**
      * touch end event hendle
      * @param  {[Object]} e [touch event]
      * @return {[type]}   [description]
      */
-    touchEnd (e) {}
+    touchEnd (e) {
+      if(this.distance) {
+        let tranX, win = this.win(), $el = this.$refs.swiperUl
+        if(this.offsetX > 50) {
+          // 下一页
+          if (this.distance > 0) {
+            // left  next
+            tranX = (this.currentIndex + 1) * win.w
+            $el.style.webkitTransitionDuration = "500ms"
+            $el.style.webkitTransform = "translate3d(" + tranX * (-1) + "px, 0, 0)"
+            this.currentIndex ++
+            this.moveX = tranX
+          } else {
+            // right prev
+            tranX = (this.currentIndex - 1) * win.w
+            $el.style.webkitTransitionDuration = "500ms"
+            $el.style.webkitTransform = "translate3d(" + tranX * (-1) + "px, 0, 0)"
+            this.currentIndex --
+            this.moveX = tranX
+          }
+        }else{
+          // 返回原位
+          tranX = this.currentIndex * win.w
+          $el.style.webkitTransitionDuration = "500ms"
+          $el.style.webkitTransform = "translate3d(" + tranX + "px, 0, 0)"
+          this.moveX = tranX
+        }
+      }
+    }
   }
 }
 </script>
