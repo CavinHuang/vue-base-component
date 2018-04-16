@@ -78,6 +78,7 @@ export default {
 
       // warrp 的长度
       $el.style.width = this.count * this.win.w + 'px'
+      this.moveX = this.win.w
       // $el.style.paddingLeft = win.w + 'px'
       // $el.style.webkitTransitionDuration = '500ms'
       $el.style.webkitTransform = 'translate3d(-' + this.win.w + 'px, 0, 0)'
@@ -121,29 +122,34 @@ export default {
         let $el = this.$refs.swiperUl
         if (this.offsetX > 50) {
           // 下一页
+          console.log(this.distance);
           if (this.distance > 0) {
+            console.log('left');
             // left  next
+            this.currentIndex = this.currentIndex + 1 > (this.items.length - 3) ? -1 : this.currentIndex
             tranX = (this.currentIndex + 1) * win.w
             $el.style.webkitTransitionDuration = '500ms'
-            $el.style.webkitTransform = 'translate3d(' + tranX * (-1) + 'px, 0, 0)'
+            $el.style.webkitTransform = 'translate3d(' + (tranX + this.win.w) * (-1) + 'px, 0, 0)'
             this.currentIndex++
-            this.moveX = tranX
+            this.moveX = tranX + this.win.w
           } else {
+            console.log('right');
             // right prev
-            this.currentIndex = this.currentIndex - 1 < 0 ? this.items.length : this.currentIndex
+            this.currentIndex = this.currentIndex - 1 < 0 ? (this.items.length - 2) : this.currentIndex
             tranX = (this.currentIndex - 1) * win.w
-
+            console.log(tranX);
             $el.style.webkitTransitionDuration = '500ms'
-            $el.style.webkitTransform = 'translate3d(' + tranX * (-1) + 'px, 0, 0)'
+            $el.style.webkitTransform = 'translate3d(' + (tranX + this.win.w) * (-1) + 'px, 0, 0)'
             this.currentIndex--
-            this.moveX = tranX
+            this.moveX = tranX + this.win.w
           }
         } else {
+          console.log('fanhui');
           // 返回原位
           tranX = this.currentIndex * win.w
           $el.style.webkitTransitionDuration = '500ms'
-          $el.style.webkitTransform = 'translate3d(' + tranX + 'px, 0, 0)'
-          this.moveX = tranX
+          $el.style.webkitTransform = 'translate3d(' + (tranX + this.win.w) * (-1) + 'px, 0, 0)'
+          this.moveX = tranX + this.win.w
         }
       }
     }
