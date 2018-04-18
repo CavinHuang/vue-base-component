@@ -20,14 +20,14 @@ export default {
   name: 'swiper',
   data () {
     return {
-      win: {}, // Windows
+      win: {w: 0}, // Windows
       items: [], // itmes
       touchData: {}, // 移动数据
       distance: 0, // 移动距离
       offsetX: 0, // 移动的距离，不带方向
       moveX: 0, // 当前的translateX
-      currentIndex: 0, // 当前索引
-      count: 0
+      currentIndex: 1, // 当前索引
+      count: 0,
     }
   },
   mounted () {
@@ -41,11 +41,11 @@ export default {
     $el.addEventListener('touchmove', this.touchMove, false)
     $el.addEventListener('touchend', this.touchEnd, false)
   },
+  watch: {},
   methods: {
     winMethod () {
       this.win = {
-        w: window.innerWidth,
-        h: window.innerHeight
+        w: window.innerWidth
       }
     },
     /**
@@ -79,8 +79,8 @@ export default {
       // warrp 的长度
       $el.style.width = this.count * this.win.w + 'px'
       this.moveX = this.win.w
-      // $el.style.paddingLeft = win.w + 'px'
-      // $el.style.webkitTransitionDuration = '500ms'
+      // $el.style.paddingLeft = this.win.w + 'px'
+      $el.style.webkitTransitionDuration = '500ms'
       $el.style.webkitTransform = 'translate3d(-' + this.win.w + 'px, 0, 0)'
     },
     /**
@@ -107,8 +107,8 @@ export default {
       this.offsetX = Math.abs(distance)
 
       // 判断方向
-      $el.style.webkitTransitionDuration = '0ms'
-      $el.style.webkitTransform = 'translate3d(' + (this.moveX + distance) * (-1) + 'px, 0, 0)'
+      //$el.style.webkitTransitionDuration = '0ms'
+      // $el.style.webkitTransform = 'translate3d(' + (this.moveX + distance) * (-1) + 'px, 0, 0)'
     },
     /**
      * touch end event hendle
@@ -126,29 +126,22 @@ export default {
           if (this.distance > 0) {
             console.log('left');
             // left  next
-            this.currentIndex = this.currentIndex + 1 > (this.items.length - 3) ? -1 : this.currentIndex
             tranX = (this.currentIndex + 1) * win.w
-            $el.style.webkitTransitionDuration = '500ms'
-            $el.style.webkitTransform = 'translate3d(' + (tranX + this.win.w) * (-1) + 'px, 0, 0)'
-            this.currentIndex++
             this.moveX = tranX + this.win.w
           } else {
             console.log('right');
             // right prev
-            this.currentIndex = this.currentIndex - 1 < 0 ? (this.items.length - 2) : this.currentIndex
             tranX = (this.currentIndex - 1) * win.w
-            console.log(tranX);
-            $el.style.webkitTransitionDuration = '500ms'
-            $el.style.webkitTransform = 'translate3d(' + (tranX + this.win.w) * (-1) + 'px, 0, 0)'
-            this.currentIndex--
             this.moveX = tranX + this.win.w
           }
+          $el.style.webkitTransitionDuration = '500ms'
+          $el.style.webkitTransform = 'translate3d(' + (tranX + this.win.w) * (-1) + 'px, 0, 0)'
         } else {
           console.log('fanhui');
           // 返回原位
           tranX = this.currentIndex * win.w
-          $el.style.webkitTransitionDuration = '500ms'
-          $el.style.webkitTransform = 'translate3d(' + (tranX + this.win.w) * (-1) + 'px, 0, 0)'
+          // $el.style.webkitTransitionDuration = '500ms'
+          // $el.style.webkitTransform = 'translate3d(' + (tranX + this.win.w) * (-1) + 'px, 0, 0)'
           this.moveX = tranX + this.win.w
         }
       }
