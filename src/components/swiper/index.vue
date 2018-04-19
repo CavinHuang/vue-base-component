@@ -126,14 +126,14 @@ export default {
           if (this.distance > 0) {
             console.log('left');
             // left  next
-            tranX = (this.currentIndex + 1) * win.w
-            this.moveX = tranX + this.win.w
+            this.currentIndex = this.currentIndex + 1 > this.count - 3 ? 0 : this.currentIndex + 1
           } else {
             console.log('right');
             // right prev
-            tranX = (this.currentIndex - 1) * win.w
-            this.moveX = tranX + this.win.w
+            this.currentIndex = this.currentIndex - 1 < 1 ? this.count - 3 : this.currentIndex - 1
           }
+          tranX = this.currentIndex * win.w
+          this.moveX = tranX + this.win.w
           $el.style.webkitTransitionDuration = '500ms'
           $el.style.webkitTransform = 'translate3d(' + (tranX + this.win.w) * (-1) + 'px, 0, 0)'
         } else {
