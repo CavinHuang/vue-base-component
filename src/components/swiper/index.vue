@@ -26,7 +26,7 @@ export default {
       distance: 0, // 移动距离
       offsetX: 0, // 移动的距离，不带方向
       moveX: 0, // 当前的translateX
-      currentIndex: 1, // 当前索引
+      currentIndex: 0, // 当前索引
       count: 0,
     }
   },
@@ -40,6 +40,7 @@ export default {
     $el.addEventListener('touchstart', this.touchStart, false)
     $el.addEventListener('touchmove', this.touchMove, false)
     $el.addEventListener('touchend', this.touchEnd, false)
+    this.$refs.swiperUl.addEventListener('transitionend', this.transitionEnd, false);
   },
   watch: {},
   methods: {
@@ -81,7 +82,8 @@ export default {
       this.moveX = this.win.w
       // $el.style.paddingLeft = this.win.w + 'px'
       $el.style.webkitTransitionDuration = '500ms'
-      $el.style.webkitTransform = 'translate3d(-' + this.win.w + 'px, 0, 0)'
+      $el.style.webkitTransition = 'transform'
+      $el.style.webkitTransform = 'translate(-' + this.win.w + 'px)'
     },
     /**
      * touch start event handle
@@ -107,8 +109,9 @@ export default {
       this.offsetX = Math.abs(distance)
 
       // 判断方向
-      //$el.style.webkitTransitionDuration = '0ms'
-      // $el.style.webkitTransform = 'translate3d(' + (this.moveX + distance) * (-1) + 'px, 0, 0)'
+      $el.style.webkitTransitionDuration = '0ms'
+      e.target.style.webkitTransition = 'none'
+      $el.style.webkitTransform = 'translate3d(' + (this.moveX + distance) * (-1) + 'px, 0, 0)'
     },
     /**
      * touch end event hendle
@@ -126,16 +129,17 @@ export default {
           if (this.distance > 0) {
             console.log('left');
             // left  next
-            this.currentIndex = this.currentIndex + 1 > this.count - 3 ? 0 : this.currentIndex + 1
+            this.currentIndex++
           } else {
             console.log('right');
             // right prev
-            this.currentIndex = this.currentIndex - 1 < 1 ? this.count - 3 : this.currentIndex - 1
+            this.currentIndex--
           }
           tranX = this.currentIndex * win.w
           this.moveX = tranX + this.win.w
+          $el.style.webkitTransition = 'transform'
           $el.style.webkitTransitionDuration = '500ms'
-          $el.style.webkitTransform = 'translate3d(' + (tranX + this.win.w) * (-1) + 'px, 0, 0)'
+          $el.style.webkitTransform = 'translate(' + (tranX + this.win.w) * (-1) + 'px)'
         } else {
           console.log('fanhui');
           // 返回原位
@@ -145,6 +149,16 @@ export default {
           this.moveX = tranX + this.win.w
         }
       }
+    },
+    transitionEnd (e) {
+      let tranX = 0
+      if (this.currentIndex > this.count - 3) this.currentIndex = 0
+      if (this.currentIndex < 0) this.currentIndex = this.count - 3
+      tranX = this.currentIndex * this.win.w
+      e.target.style.webkitTransitionDuration = 0
+      e.target.style.webkitTransition = 'none'
+      e.target.style.webkitTransform = 'translate(' + (tranX + this.win.w) * (-1) + 'px)'
+
     }
   }
 }
