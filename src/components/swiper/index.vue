@@ -1,14 +1,14 @@
 <template lang="pug">
 div.swiper-container
   div.swiper-warrp
-    ul.swiper-ul(ref="swiperUl")
+    ul.swiper-ul(:style="containerStyle", @transitionend="transitionEndHandel" ref="swiperUl")
       slot
   div.swiper-dots
     span.swiper-dot-item(v-for="(item, $index) in items")
   div.swiper-slide-arrow
-    div.swiper-slide-left
+    div.swiper-slide-left(@touchstart="prev()")
       span.swiper-arrow.swiper-arrow-left
-    div.swiper-slide-right
+    div.swiper-slide-right(@touchstart="next()")
       span.swiper-arrow.swiper-arrow-right
 </template>
 
@@ -20,33 +20,27 @@ export default {
   name: 'swiper',
   data () {
     return {
-      win: {w: 0}, // Windows
-      items: [], // itmes
-      touchData: {}, // 移动数据
-      distance: 0, // 移动距离
-      offsetX: 0, // 移动的距离，不带方向
-      moveX: 0, // 当前的translateX
-      currentIndex: 0, // 当前索引
+      warrpEle: null,
+      containerStyle: {},
+      items: [],
       count: 0,
+      currentIndex: 1,
+      distance: 375
     }
   },
-  mounted () {
-    this.winMethod()
-    this.initItems()
-    this.cloneItemNode()
-    // 绑定时事件
-    const $el = this.$el
-
-    $el.addEventListener('touchstart', this.touchStart, false)
-    $el.addEventListener('touchmove', this.touchMove, false)
-    $el.addEventListener('touchend', this.touchEnd, false)
-    this.$refs.swiperUl.addEventListener('transitionend', this.transitionEnd, false);
-  },
+  computed: {},
   watch: {},
+  mounted () {
+    this.init()
+  },
   methods: {
-    winMethod () {
-      this.win = {
-        w: window.innerWidth
+    init () {
+      this.initItems()
+      this.distance = window.innerWidth
+      this.containerStyle = {
+        transform: `translate3d(-${this.distance}px, 0, 0)`,
+        width: this.count * this.distance + 'px',
+        transition: 'none'
       }
     },
     /**
@@ -57,108 +51,46 @@ export default {
       const $el = this.$refs.swiperUl
       const children = $el.children
       const len = children.length
-      const win = this.win
       for (var i = 0; i < len; i++) {
-        children[i].style.width = win.w + 'px'
+        children[i].style.width = this.distance + 'px'
         this.items.push(children[i])
       }
       this.count = len
+      this.cloneItemNode()
     },
     /**
      * 克隆两个节点
      * @return {[type]} [description]
      */
     cloneItemNode () {
-      const $el = this.$refs.swiperUl
       let head = this.items[0].cloneNode(this.items[0], true)
       let tail = this.items[this.count - 1].cloneNode(this.items[this.count - 1], true)
       this.$refs.swiperUl.appendChild(head)
       this.$refs.swiperUl.insertBefore(tail, this.items[0])
       this.items = toArray(this.$refs.swiperUl.children)
       this.count = this.items.length
-
-      // warrp 的长度
-      $el.style.width = this.count * this.win.w + 'px'
-      this.moveX = this.win.w
-      // $el.style.paddingLeft = this.win.w + 'px'
-      $el.style.webkitTransitionDuration = '500ms'
-      $el.style.webkitTransition = 'transform'
-      $el.style.webkitTransform = 'translate(-' + this.win.w + 'px)'
     },
-    /**
-     * touch start event handle
-     * @param  {[Object]} e [touch event]
-     * @return {[type]}   [description]
-     */
-    touchStart (e) {
-      const touchs = e.touches[0] ? e.touches[0] : e
-      this.touchData.startTime = Date.now() // 开始时的时间戳
-      this.touchData.startX = touchs.clientX // 开始时的横坐标
+    doTranslate () {
+      this.containerStyle.transform = `translate3d(-${this.currentIndex * this.distance}px, 0, 0)`
+      this.containerStyle.transition = '200ms transform'
     },
-    /**
-     * touch move event handle
-     * @param  {[Object]} e [touch event]
-     * @return {[type]}   [description]
-     */
-    touchMove (e) {
-      const touchs = e.touches[0] ? e.touches[0] : e
-      const pageX = touchs.clientX
-      const $el = this.$refs.swiperUl
-      let distance = this.touchData.startX - pageX
-      this.distance = distance
-      this.offsetX = Math.abs(distance)
-
-      // 判断方向
-      $el.style.webkitTransitionDuration = '0ms'
-      e.target.style.webkitTransition = 'none'
-      $el.style.webkitTransform = 'translate3d(' + (this.moveX + distance) * (-1) + 'px, 0, 0)'
+    prev () {
+      this.currentIndex--
+      this.doTranslate()
     },
-    /**
-     * touch end event hendle
-     * @param  {[Object]} e [touch event]
-     * @return {[type]}   [description]
-     */
-    touchEnd (e) {
-      if (this.distance) {
-        let tranX
-        let win = this.win
-        let $el = this.$refs.swiperUl
-        if (this.offsetX > 50) {
-          // 下一页
-          console.log(this.distance);
-          if (this.distance > 0) {
-            console.log('left');
-            // left  next
-            this.currentIndex++
-          } else {
-            console.log('right');
-            // right prev
-            this.currentIndex--
-          }
-          tranX = this.currentIndex * win.w
-          this.moveX = tranX + this.win.w
-          $el.style.webkitTransition = 'transform'
-          $el.style.webkitTransitionDuration = '500ms'
-          $el.style.webkitTransform = 'translate(' + (tranX + this.win.w) * (-1) + 'px)'
-        } else {
-          console.log('fanhui');
-          // 返回原位
-          tranX = this.currentIndex * win.w
-          // $el.style.webkitTransitionDuration = '500ms'
-          // $el.style.webkitTransform = 'translate3d(' + (tranX + this.win.w) * (-1) + 'px, 0, 0)'
-          this.moveX = tranX + this.win.w
-        }
+    next () {
+      this.currentIndex++
+      this.doTranslate()
+    },
+    transitionEndHandel () {
+      if (this.currentIndex < 1) {
+        this.currentIndex = this.count - 2
       }
-    },
-    transitionEnd (e) {
-      let tranX = 0
-      if (this.currentIndex > this.count - 3) this.currentIndex = 0
-      if (this.currentIndex < 0) this.currentIndex = this.count - 3
-      tranX = this.currentIndex * this.win.w
-      e.target.style.webkitTransitionDuration = 0
-      e.target.style.webkitTransition = 'none'
-      e.target.style.webkitTransform = 'translate(' + (tranX + this.win.w) * (-1) + 'px)'
-
+      if (this.currentIndex > this.count - 2) {
+        this.currentIndex = 1
+      }
+      this.containerStyle.transform = `translate3d(-${this.currentIndex * this.distance}px, 0, 0)`
+      this.containerStyle.transition = 'none'
     }
   }
 }
