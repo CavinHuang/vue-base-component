@@ -30,11 +30,11 @@ npm test
 
 ## ToDo list
 
-- <input type="checkbox" checked><i>幻灯片 (swiper)</i>
-- <input type="checkbox">图片预览组件(preview-picture)
-- <input type="checkbox">底部自动加载(autoload)
-- <input type="checkbox">上拉加载，下拉刷新(pull)
-- <input type="checkbox">加载中(loading)
-- <input type="checkbox">选项卡(slide-tab)
-- <input type="checkbox">日期选择器(date-picke)
-- <input type="checkbox">模态框(dialog)
+- []~~<i>幻灯片 (swiper)</i>~~
+- [x]图片预览组件(preview-picture)
+- [x]底部自动加载(autoload)
+- [x]上拉加载，下拉刷新(pull)
+- [x]加载中(loading)
+- [x]选项卡(slide-tab)
+- [x]日期选择器(date-picke)
+- [x]模态框(dialog)
