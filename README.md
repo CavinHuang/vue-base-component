@@ -23,16 +23,18 @@ npm run unit
 # run all tests
 npm test
 ```
+## 更新记录
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+### 2018/04/24
+- 修复swiper点击上一页下一页动画过度再点击不再自动播放的bug
 
-to do list
+## ToDo list
 
-- 幻灯片 (swiper)
-- 图片预览组件(preview-picture)
-- 底部自动加载(autoload)
-- 上拉加载，下拉刷新(pull)
-- 加载中(loading)
-- 选项卡(slide-tab)
-- 日期选择器(date-picke)
-- 模态框(dialog)
+- <input type="checkbox" checked><i>幻灯片 (swiper)</i>
+- <input type="checkbox">图片预览组件(preview-picture)
+- <input type="checkbox">底部自动加载(autoload)
+- <input type="checkbox">上拉加载，下拉刷新(pull)
+- <input type="checkbox">加载中(loading)
+- <input type="checkbox">选项卡(slide-tab)
+- <input type="checkbox">日期选择器(date-picke)
+- <input type="checkbox">模态框(dialog)
