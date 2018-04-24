@@ -4,7 +4,7 @@ div.swiper-container
     ul.swiper-ul(:style="containerStyle", @transitionend="transitionEndHandel", @touchstart="touchStartHandel", @touchmove="touchMoveHandel", @touchend="touchEndHandel",ref="swiperUl")
       slot
   div.swiper-dots
-    span.swiper-dot-item(v-for="(item, $index) in items")
+    span.swiper-dot-item(v-for="(item, $index) in items", v-if="$index > 0 && $index < count - 1" :class="{[activeDotClass]: setActive($index)}")
   div.swiper-slide-arrow
     div.swiper-slide-left(@touchstart="prev()")
       span.swiper-arrow.swiper-arrow-left
@@ -34,6 +34,14 @@ export default {
     autoInterval: {
       type: Number,
       default: 1500
+    },
+    activeClass: {
+      type: String,
+      default: 'active-item'
+    },
+    activeDotClass: {
+      type: String,
+      default: 'active-dot'
     }
   },
   data () {
@@ -52,13 +60,17 @@ export default {
         x: 0
       },
       isTransition: false, // 标识是否正在移动
-      timer: []
+      timer: [],
+      realCount: 0
     }
   },
   mounted () {
     this.init()
   },
   methods: {
+    setActive (i) {
+      return i === this.currentIndex
+    },
     /**
      * 初始化整个应用
      * @return {[type]} [description]
@@ -78,6 +90,7 @@ export default {
      * @return {[type]} [description]
      */
     auto () {
+      this.isTransition = false
       if (this.autoPlay) {
         const timer = setInterval(() => {
           this.next()
@@ -114,6 +127,7 @@ export default {
       }
       this.warrpEle = $el
       this.count = len
+      this.realCount = len
       this.cloneItemNode()
     },
     /**

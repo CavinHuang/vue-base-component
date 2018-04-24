@@ -13,8 +13,8 @@ div.swiper-demo-container
       swiper-item
         div.slide-dbg.gbg1 第五页
   div(style="position:relative;width:100%;height:200px; margin-top: 40px;")
-    swiper-new(:loop="false")
-      swiper-item(class="active-item")
+    swiper-new(:loop="true")
+      swiper-item
         div.slide-dbg.gbg1 第一页
       swiper-item
         div.slide-dbg.gbg2 第二页
