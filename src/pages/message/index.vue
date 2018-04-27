@@ -1,6 +1,7 @@
 <template lang="pug">
 div
   message
+    i.icon-
 </template>
 
 <script>
