@@ -33,7 +33,7 @@ npm test
 
 - [x] ~~<i>幻灯片 (swiper)</i>~~
 - [ ] 模态框(dialog)
-- [ ] 提示框(message)
+- [x] 信息提示(message)
 - [ ] 左滑操作(leftSlide)
 - [ ] 图片预览组件(preview-picture)
 - [ ] 底部自动加载(autoload)
