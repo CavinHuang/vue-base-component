@@ -1,6 +1,6 @@
 <template lang="pug">
 transition(name="fade")
-  .vb-message-warrp(v-if="isShow === true")
+  .vb-message-warrp(v-show="isShow === true")
     .vb-message-container
       .vb-message-icon(v-if="icon === true")
         i.iconfont(:class="[iconClass]")
