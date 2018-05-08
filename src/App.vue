@@ -1,10 +1,11 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <!-- <img src="./assets/logo.png"> -->
     <ul>
       <router-link :to="{ name: 'Swiper'}" tag="li">Swiper</router-link>
       <router-link :to="{ name: 'Message'}" tag="li">Message</router-link>
       <router-link :to="{ name: 'LeftSlide'}" tag="li">LeftSlide</router-link>
+      <router-link :to="{ name: 'Dialog'}" tag="li">Dialog</router-link>
     </ul>
     <router-view/>
   </div>

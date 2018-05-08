@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import Swiper from '@/pages/swiper'
 import Message from '@/pages/message'
 import LeftSlide from '@/pages/leftSlide'
+import VbDialog from '@/pages/dialog'
 
 Vue.use(Router)
 
@@ -23,6 +24,11 @@ export default new Router({
       path: '/leftslide',
       name: 'LeftSlide',
       component: LeftSlide
+    },
+    {
+      path: '/dialog',
+      name: 'Dialog',
+      component: VbDialog
     }
   ]
 })
